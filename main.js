@@ -1,42 +1,64 @@
 const d = document;
 
 const carousel = d.querySelector(".carousel .carousel-images")
-
+let carouselSLeft = carousel.scrollLeft
 const buttons = d.querySelectorAll(".buttons-container .button")
 const images = d.querySelectorAll(".carousel-images .image")
 const dialog = d.querySelector(".dialog-image")
-let actualCheckButton;
+let actualCheckButton = buttons[0];
 
-for (const button of buttons) {
-	if(button.getAttribute("checked") !== null){
-		actualCheckButton = button
-	}
-}
+const arrows = [ d.getElementById("arrow-left"), d.getElementById("arrow-right") ]
+const imageWidth = carousel.querySelector(".image-item").offsetWidth
+const scrollMax = carousel.scrollWidth - carousel.clientWidth // **ELEMENT.scrollLeftMax**
 
-const mobileArrowLeft = d.getElementById("arrow-left")
-const mobileArrowRight = d.getElementById("arrow-right")
-const scrollWidth = carousel.querySelector(".image-item").offsetWidth + 19.2
+const cAdd = (elem, cName)=> elem.classList.add(cName)
+const cRev = (elem, cName)=> elem.classList.remove(cName)
 
-if(carousel.scrollLeft < 750){
-	mobileArrowLeft.classList.add("hide-btn")
-}else if(carousel.scrollLeft >= carousel.scrollWidth){
-	mobileArrowRight.classList.add("hide-btn")
-}
+d.addEventListener('DOMContentLoaded', e => {
+	if(carouselSLeft < imageWidth) cAdd(arrows[0], "hide-arrow")
+	if(carouselSLeft === scrollMax) cAdd(arrows[1], "hide-arrow")
 
-carousel.addEventListener('scroll', e => {
+	carousel.addEventListener('scroll', e => {
+		carouselSLeft = carousel.scrollLeft
 
-	if(carousel.scrollLeft > 0){
-		mobileArrowLeft.classList.remove("hide-btn")
-	}else{
-		mobileArrowLeft.classList.add("hide-btn")
-	}
+		if(carouselSLeft > imageWidth){
+			cRev(arrows[0], "hide-arrow")
+		}else cAdd(arrows[0], "hide-arrow")
 
-	if(carousel.scrollLeft === carousel.scrollWidth){
-		mobileArrowRight.classList.add("hide-btn")
-	}
+		if(carouselSLeft === scrollMax){
+			cAdd(arrows[1], "hide-arrow")
+		}else cRev(arrows[1], "hide-arrow")
+		})
 })
 
+const imageEventHandler = (e) => {
+
+	if(e.target.matches("#arrow-left") || e.target.matches("#arrow-left *")){
+		carousel.scrollLeft -= imageWidth
+	}else if(e.target.matches("#arrow-right") || e.target.matches("#arrow-right *")) carousel.scrollLeft += imageWidth 
+
+	for (const image of images) {
+		if(!dialog.getAttribute("open") && e.target === image){
+			dialog.querySelector("img").src = image.src
+			dialog.showModal()
+			cAdd(dialog, "open")
+
+				dialog.addEventListener('click', e => {
+					if(e.target !== dialog.querySelector("img")) dialog.close()
+				})
+
+			dialog.addEventListener('close', e => cRev(dialog, "open"))
+		}
+	}
+}
+
+
+d.addEventListener('touchstart', e => imageEventHandler(e))
+
 d.addEventListener('click', e => {
+
+	imageEventHandler(e)
+
 	for (const button of buttons) {
 		if(e.target === button){
 
@@ -55,34 +77,19 @@ d.addEventListener('click', e => {
 					carousel.scrollLeft = carousel.offsetWidth * 2
 					break;
 				case buttons[3]:
-					carousel.scrollLeft = carousel.scrollWidth
+					if(!buttons[4]){
+						carousel.scrollLeft = scrollMax
+					}else carousel.scrollLeft = carousel.offsetWidth * 3
+					break;
+				case buttons[4]:
+					carousel.scrollLeft = carousel.offsetWidth * 4
+					break;
+				case buttons[5]:
+					carousel.scrollLeft = scrollMax
 					break;
 			}
 		}
 	}
 
-	if(e.target.matches("#arrow-left") || e.target.matches("#arrow-left *")){
-		carousel.scrollLeft -= scrollWidth
-	}else if(e.target.matches("#arrow-right") || e.target.matches("#arrow-right *")){
-		carousel.scrollLeft += scrollWidth
-	}
 
-	for (const image of images) {
-		if(!dialog.getAttribute("open") && e.target === image){
-			dialog.querySelector("img").src = image.src
-			dialog.showModal()
-			dialog.classList.add("open")
-			dialog.addEventListener('close', e => {
-				dialog.classList.remove("open")
-			})
-		}
-	}
-
-	//if(dialog.getAttribute("open") && e.target !== dialog.querySelector("img")){
-		//dialog.close()
-	//}
 })
-
-setInterval(() => {
-	console.log(carousel.offsetWidth)
-}, 1000);
