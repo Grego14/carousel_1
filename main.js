@@ -43,16 +43,13 @@ const imageEventHandler = (e) => {
 			dialog.showModal()
 			cAdd(dialog, "open")
 
-				dialog.addEventListener('click', e => {
-					if(e.target !== dialog.querySelector("img")) dialog.close()
-				})
-
 			dialog.addEventListener('close', e => cRev(dialog, "open"))
+			dialog.addEventListener('click', e => dialog.close())
 		}
 	}
 }
 
-
+d.addEventListener('touchend', e => e.preventDefault()) // Prevent instant closing of the dialog
 d.addEventListener('touchstart', e => imageEventHandler(e))
 
 d.addEventListener('click', e => {
@@ -90,6 +87,4 @@ d.addEventListener('click', e => {
 			}
 		}
 	}
-
-
 })
