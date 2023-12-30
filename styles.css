@@ -10,7 +10,7 @@
 	--button-clicked: #99bde0;
 	--bc-border: #629bce;
 
-	--image-height: 14.5625rem;
+	--image-width: 14.5625rem;
 }
 
 body{
@@ -23,9 +23,7 @@ body{
   background: -o-radial-gradient(#213b59, #16263b) no-repeat;
 }
 
-.flex-container{
-	display: flex;
-}
+.flex-container{ display: flex; }
 
 main{
 	height: 100%;
@@ -35,30 +33,28 @@ main{
 
 .carousel{
 	flex-direction: column;
-	max-width: calc((14.5625rem * 3) + (1.2rem * 2));
+	max-width: 45.6875rem; /* --image-width * 3 + 2rem */
 	position: relative;
 }
 
 .carousel-images{
-	justify-content: flex-start;
-	align-items: center;
-	gap: 1.2rem;
 	max-width: 100%;
 	max-height: 20rem;
+	justify-content: flex-start;
 	align-self: flex-start;
-	overflow: scroll hidden;
+	overflow: hidden;
 	scroll-behavior: smooth;
 	scroll-snap-type: x mandatory;
-	scrollbar-width: none;
 }
 
 .image-item{ 
-	min-width: var(--image-height);
-	height: 20rem;
+	min-width: var(--image-width);
 	cursor: pointer;
 	scroll-snap-align: start;
 	scroll-snap-stop: always;
 }
+
+.image-item + .image-item{ margin-left: 1rem; }
 
 .image-item .image{
 	aspect-ratio: 1 / 2;
@@ -68,9 +64,7 @@ main{
 	user-select: none;
 }
 
-.arrow{
-	display: none;
-}
+.arrow{ display: none; }
 
 .buttons-container{
 	justify-content: center;
@@ -89,9 +83,7 @@ main{
 	margin: 5px;
 }
 
-.button:nth-child(5), .button:nth-child(6){
-	display: none;
-}
+.button:nth-child(5), .button:nth-child(6){ display: none; }
 
 .buttons-container .button:checked{
 	background-color: var(--button-clicked);
@@ -104,7 +96,7 @@ main{
 	height: 30rem;
 	overflow: hidden;
 	opacity: 0;
-	transform: scale(0);
+	transform: scale(.75);
 	transition: opacity 250ms ease-in, transform 200ms ease-in, box-shadow 400ms ease-in;
 	outline: none;
 	border: none;
@@ -123,34 +115,25 @@ main{
 
 .dialog-image img{
 	object-fit: cover;
-	width: 21.84375rem;  /* (--image-height / 2) + --image-height */
+	width: 21.84375rem;  /* (--image-width / 2) + --image-width */
 	height: 100%;
 }
 
 /* ***media querys*** */
 
-@media only screen and (max-width: 768px){
+@media only screen and (max-width: 900px){
+
+	.dialog-image img{ width: 19.416rem }
+	.dialog-image{ height: 25rem; }
 
 	.button{
 		width: 25px;
 		height: 25px;
 	}
 
-	.button:nth-child(5), .button:nth-child(6){
-		display: inline-block;
-	}
+	.button:nth-child(5), .button:nth-child(6){ display: inline-block; }
 
-	.carousel{
-		max-width: calc((14.5625rem * 2) + 1.2rem);
-	}
-
-}
-
-@media only screen and (max-width: 480px){
-
-	.buttons-container{ display: none; }
-
-	.carousel{ max-width: 14.5625rem; }
+	.carousel{ max-width: calc((14.5625rem * 2) + 1.2rem); }
 
 	.arrow{
 		position: absolute;
@@ -163,6 +146,13 @@ main{
 	#arrow-right{ right: -3rem; }
 
 	#arrow-left{ left: -3rem; }
+}
+
+@media only screen and (max-width: 550px){
+
+	.buttons-container{ display: none; }
+
+	.carousel{ max-width: var(--image-width); }
 
 	.hide-arrow{ display: none; }
 }
